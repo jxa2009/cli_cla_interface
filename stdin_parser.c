@@ -5,7 +5,47 @@
 #include <string.h>
 #include <errno.h>
 
+#include "stdin_parser.h"
+
 #define USE_STD_OUT 1
+
+void stdin_get(char* argument)
+{
+    #ifdef USE_STD_OUT
+        fprintf(stdout,"Filename: %s\n",argument);
+    #else
+        fprintf(stderr,"Filename: %s\n",argument);
+    #endif
+}
+
+void stdin_put(char* argument)
+{
+    #ifdef USE_STD_OUT
+        fprintf(stdout,"Filename: %s\n",argument);
+    #else
+        fprintf(stderr,"Filename: %s\n",argument);
+    #endif
+}
+
+void stdin_ascii(void)
+{
+    #ifdef USE_STD_OUT
+        fprintf(stdout,"Ascii mode now activated\n");
+    #else
+        fprintf(stderr,"Ascii mode now activated\n");
+    #endif
+    
+}
+
+void stdin_bin(void)
+{
+    #ifdef USE_STD_OUT
+        fprintf(stdout,"Bin mode now activated\n");
+    #else
+        fprintf(stderr,"Bin mode now activated\n");
+    #endif
+    
+}
 
 int main(int argc, char *argv[]) {
     int rc = 0;
@@ -25,23 +65,32 @@ int main(int argc, char *argv[]) {
     {
 #ifdef USE_STD_OUT
         fprintf(stdout, "\tRcvd> %s\n\n", input );
-        fprintf(stdout, "PROMTPT> ");
 #else
         fprintf(stderr, "\tRcvd> %s\n\n", input );
-        fprintf(stderr, "PROMTPT> ");
 #endif
-
-        token = strtok(input,commandSep);
-        printf("token: \"%s\"",token);
-        if (strncmp(token,"get",sizeof(token)) == 0)
-        {
-            fprintf(stdout, "received get\n");
-        }
-        else
-        {
-            fprintf(stdout,"not get\n");
-        }
         
-
+        token = strtok(input,commandSep);
+        for(int i = 0 ; i < NUM_PARSER_FUNCTIONS;i++)
+        {
+            if (strncmp(token, ParserFunctions[i].function_name,strlen(token)) == 0 )
+            {
+                if( ParserFunctions[i].has_arg)
+                {
+                    token = strtok(NULL,commandSep);
+                    ParserFunctions[i].respective_function(token);
+                }
+                else
+                {
+                    ParserFunctions[i].respective_function(NULL);
+                }
+                break;
+            }
+        }
     }
+#ifdef USE_STD_OUT
+    fprintf(stdout, "PROMPT> ");
+#else
+    fprintf(stderr, "PROMPT> ");
+#endif
 }
+
