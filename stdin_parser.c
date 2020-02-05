@@ -86,11 +86,12 @@ int main(int argc, char *argv[]) {
                 break;
             }
         }
+        #ifdef USE_STD_OUT
+            fprintf(stdout, "PROMPT> ");
+        #else
+            fprintf(stderr, "PROMPT> ");
+        #endif
+        }
     }
-#ifdef USE_STD_OUT
-    fprintf(stdout, "PROMPT> ");
-#else
-    fprintf(stderr, "PROMPT> ");
-#endif
-}
+
 
