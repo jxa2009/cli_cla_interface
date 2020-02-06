@@ -9,7 +9,7 @@
 
 #define USE_STD_OUT 1
 
-void stdin_get(char* argument)
+static void stdin_get(char* argument)
 {
     #ifdef USE_STD_OUT
         fprintf(stdout,"Filename: %s\n",argument);
@@ -18,7 +18,7 @@ void stdin_get(char* argument)
     #endif
 }
 
-void stdin_put(char* argument)
+static void stdin_put(char* argument)
 {
     #ifdef USE_STD_OUT
         fprintf(stdout,"Filename: %s\n",argument);
@@ -27,7 +27,7 @@ void stdin_put(char* argument)
     #endif
 }
 
-void stdin_ascii(void)
+static void stdin_ascii(char* argument)
 {
     #ifdef USE_STD_OUT
         fprintf(stdout,"Ascii mode now activated\n");
@@ -37,7 +37,7 @@ void stdin_ascii(void)
     
 }
 
-void stdin_bin(void)
+static void stdin_bin(char* argument)
 {
     #ifdef USE_STD_OUT
         fprintf(stdout,"Bin mode now activated\n");
@@ -48,12 +48,12 @@ void stdin_bin(void)
 }
 
 int main(int argc, char *argv[]) {
-    int rc = 0;
+
     long psize = sysconf(_SC_PAGESIZE);
     
     char input[psize];
 
-    char commandSep[] = " ";
+    char commandSep[] = " \t\r\n";
     char *token;
 #ifdef USE_STD_OUT
     fprintf(stdout, "PROMPT> " );
@@ -63,11 +63,11 @@ int main(int argc, char *argv[]) {
     // fgets is being used because it checks for array bound
     while ( fgets( input, psize, stdin) != NULL )
     {
-#ifdef USE_STD_OUT
-        fprintf(stdout, "\tRcvd> %s\n\n", input );
-#else
-        fprintf(stderr, "\tRcvd> %s\n\n", input );
-#endif
+    #ifdef USE_STD_OUT
+            fprintf(stdout, "\tRcvd> %s\n\n", input );
+    #else
+            fprintf(stderr, "\tRcvd> %s\n\n", input );
+    #endif
         
         token = strtok(input,commandSep);
         for(int i = 0 ; i < NUM_PARSER_FUNCTIONS;i++)

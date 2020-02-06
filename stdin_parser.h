@@ -1,15 +1,13 @@
 #ifndef STDIN_PARSER_H
 #define STDIN_PARSER_H
 
-void stdin_get(char* argument);
+static void stdin_get(char* argument);
 
-void stdin_put(char* argument);
+static void stdin_put(char* argument);
 
-void stdin_ascii(void);
+static void stdin_ascii(char* argument);
 
-void stdin_bin(void);
-
-void stdin_parse(char *token);
+static void stdin_bin(char* argument);
 
 typedef struct ParserFunction_E
 {
